@@ -758,6 +758,7 @@ PRIVILEGED_DATA static volatile uint32_t ulCriticalNesting = 0xaaaaaaaaUL;
 
 __attribute__( ( weak ) ) void vPortSetupTimerInterrupt( void ) /* PRIVILEGED_FUNCTION */
 {
+    
     /* Calculate the constants required to configure the tick interrupt. */
     #if ( configUSE_TICKLESS_IDLE == 1 )
     {
@@ -778,9 +779,12 @@ __attribute__( ( weak ) ) void vPortSetupTimerInterrupt( void ) /* PRIVILEGED_FU
     portNVIC_SYSTICK_CTRL_REG = portNVIC_SYSTICK_CLK_BIT_CONFIG;
     portNVIC_SYSTICK_CURRENT_VALUE_REG = 0UL;
 
+    
     /* Configure SysTick to interrupt at the requested rate. */
     portNVIC_SYSTICK_LOAD_REG = ( configSYSTICK_CLOCK_HZ / configTICK_RATE_HZ ) - 1UL;
+    
     portNVIC_SYSTICK_CTRL_REG = portNVIC_SYSTICK_CLK_BIT_CONFIG | portNVIC_SYSTICK_INT_BIT | portNVIC_SYSTICK_ENABLE_BIT;
+    
 }
 /*-----------------------------------------------------------*/
 
@@ -1776,6 +1780,7 @@ BaseType_t xPortStartScheduler( void ) /* PRIVILEGED_FUNCTION */
     /* Start the timer that generates the tick ISR. Interrupts are disabled
      * here already. */
     vPortSetupTimerInterrupt();
+    //jzx this is the bug
 
     /* Initialize the critical nesting count ready for the first task. */
     ulCriticalNesting = 0;

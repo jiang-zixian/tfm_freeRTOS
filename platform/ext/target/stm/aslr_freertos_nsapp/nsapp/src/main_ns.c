@@ -1,13 +1,12 @@
 #include "main_ns.h"
 #include "FreeRTOS.h"
 #include "assert.h"
-
 #include "stm32l562xx.h"
 #include "stm32l5xx_hal.h"
 #include "stm32l5xx_hal_flash.h"
 #include "stm32l5xx_hal_rcc.h"
 #include "support.h"
-//#include "task.h"
+#include "task.h"
 #define TFM_SPM_LOG_LEVEL TFM_SPM_LOG_LEVEL_DEBUG
 
 static void MX_GPIO_Init(void) {
@@ -33,8 +32,20 @@ void spin_100000() {
     }
 }
 
+void testThread2(void *pvParameters) {
+    int a=0;
+    initialise_benchmark();
+    int result = benchmark();
+    assert(verify_benchmark(result));
+    while (1) {
+        a++;
+        HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_3);
+        spin_100000();
+    }
+}
 
-void testThread2(void) {
+
+void testThread1(void) {
     initialise_benchmark();
     int result = benchmark();
     assert(verify_benchmark(result));
@@ -42,36 +53,40 @@ void testThread2(void) {
 //     HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_3);
 //     vTaskDelay(500);
 //   }
+    // while (1) {
+    //     HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_3);
+    //     spin_100000();
+    // }
 }
 
 int main() {
     MX_GPIO_Init();
 
-    testThread2();
+    testThread1();
 
-//       static StackType_t xRWAccessTaskStack1[configMINIMAL_STACK_SIZE]
-//       __attribute__((aligned(32)));
-//   TaskParameters_t taskParams2 = {
-//       .pvTaskCode = testThread2,
-//       .pcName = "testThread2",
-//       .usStackDepth = configMINIMAL_STACK_SIZE,
-//       .pvParameters = NULL,
-//       .uxPriority = 1 | portPRIVILEGE_BIT,
-//       .puxStackBuffer = xRWAccessTaskStack1,
-//       .xRegions = {
-//           /* Base address Length Parameters */
-//           {(void *)(AHB2PERIPH_BASE_NS), 0x2000UL, portMPU_REGION_READ_WRITE},
-//           {0, 0, 0},
-//           {0, 0, 0}}};
-//   //xTaskCreateRestricted(&taskParams, NULL);
-//   xTaskCreateRestricted(&taskParams2, NULL);
-    
-
-    
     while (1) {
         HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_3);
-        spin_100000();
+        for (int i = 0; i < 100000; i++) {
+            __ASM volatile("nop");
+        }
     }
+
+    BaseType_t xReturned;
+
+
+    xReturned = xTaskCreate(
+                    testThread2,       /* Function that implements the task. */
+                    "testThread2",          /* Text name for the task. */
+                    ((uint16_t)400),      /* Stack size in words, not bytes. */
+                    (void *)1,    /* Parameter passed into the task. */
+                    1 | portPRIVILEGE_BIT,/* Priority at which the task is created. */
+                    NULL );      /* Used to pass out the created task's handle. */
+
+
+
+      /* 启动调度器 */
+  vTaskStartScheduler();
+
 
     /* 如果系统正常工作，以下代码不会执行 */
     for (;;)

@@ -122,11 +122,28 @@ int main(void) {
     // relocate(offset1);
 
     uint32_t __text_address__ = 0x8055000;
-    uint32_t offset_a = 0x17fae000; // 0x20003000
-    uint32_t offset_b = 0x17fb0000; // 0x20005000
 
-    copy_text2ram(__text_address__ + offset_a, __text_address__, 0x1000);
-    copy_text2ram(__text_address__ + offset_b, __text_address__, 0x1000);
+    uint32_t offset_a = 0x17fb1000; // 0x20006000
+    uint32_t offset_b = 0x17fb6000; // 0x2000b000
+
+    copy_text2ram(__text_address__ + offset_a, __text_address__, 0x4000);
+    copy_text2ram(__text_address__ + offset_b, __text_address__, 0x4000);
+
+    // uint32_t offset_a = 0x17fb1000; // 0x20006000
+    // uint32_t offset_b = 0x17fb6000; // 0x2000b000
+
+    // for(int j=0;j<4;j++){
+    //     copy_text2ram(__text_address__ + offset_a+j*(0x1000), __text_address__+j*(0x1000), 0x1000);
+    // }
+    // for(int j=0;j<4;j++){
+    //     copy_text2ram(__text_address__ + offset_b+j*(0x1000), __text_address__+j*(0x1000), 0x1000);
+    // }
+
+    // uint32_t offset_a = 0x17fae000; // 0x20003000
+    // uint32_t offset_b = 0x17fb0000; // 0x20005000
+
+    // copy_text2ram(__text_address__ + offset_a, __text_address__, 0x1000);
+    // copy_text2ram(__text_address__ + offset_b, __text_address__, 0x1000);
     divide();
     relocation(offset_a, offset_b);
     /* Move to handler mode for further SPM initialization. */

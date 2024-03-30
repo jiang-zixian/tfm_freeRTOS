@@ -1680,11 +1680,11 @@ void vPortSVCHandler_C( uint32_t * pulCallerStackAddress ) /* PRIVILEGED_FUNCTIO
 BaseType_t xPortStartScheduler( void ) /* PRIVILEGED_FUNCTION */
 {
     #if ( ( configASSERT_DEFINED == 1 ) && ( portHAS_ARMV8M_MAIN_EXTENSION == 1 ) )
-    {
+    {   
         volatile uint32_t ulOriginalPriority;
         volatile uint32_t ulImplementedPrioBits = 0;
         volatile uint8_t ucMaxPriorityValue;
-
+        
         /* Determine the maximum priority from which ISR safe FreeRTOS API
          * functions can be called.  ISR safe functions are those that end in
          * "FromISR".  FreeRTOS maintains separate thread and ISR API functions to
@@ -1692,6 +1692,7 @@ BaseType_t xPortStartScheduler( void ) /* PRIVILEGED_FUNCTION */
          *
          * Save the interrupt priority value that is about to be clobbered. */
         ulOriginalPriority = portNVIC_SHPR2_REG;
+        
 
         /* Determine the number of priority bits available.  First write to all
          * possible bits. */
@@ -1772,6 +1773,8 @@ BaseType_t xPortStartScheduler( void ) /* PRIVILEGED_FUNCTION */
         prvSetupMPU();
     }
     #endif /* configENABLE_MPU */
+
+    
 
     /* Start the timer that generates the tick ISR. Interrupts are disabled
      * here already. */

@@ -172,6 +172,7 @@ PRIVILEGED_DATA static size_t xNumberOfSuccessfulFrees = 0;
 
 void * pvPortMalloc( size_t xWantedSize )
 {
+    // while(1){}
     BlockLink_t * pxBlock;
     BlockLink_t * pxPreviousBlock;
     BlockLink_t * pxNewBlockLink;

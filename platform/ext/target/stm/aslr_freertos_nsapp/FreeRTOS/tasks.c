@@ -1700,8 +1700,9 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
 
         traceENTER_xTaskCreate( pxTaskCode, pcName, usStackDepth, pvParameters, uxPriority, pxCreatedTask );
 
+        
         pxNewTCB = prvCreateTask( pxTaskCode, pcName, usStackDepth, pvParameters, uxPriority, pxCreatedTask );
-
+        
         if( pxNewTCB != NULL )
         {
             #if ( ( configNUMBER_OF_CORES > 1 ) && ( configUSE_CORE_AFFINITY == 1 ) )
@@ -3616,6 +3617,7 @@ void vTaskStartScheduler( void )
 
     xReturn = prvCreateIdleTasks();
 
+
     #if ( configUSE_TIMERS == 1 )
     {
         if( xReturn == pdPASS )
@@ -3669,9 +3671,12 @@ void vTaskStartScheduler( void )
 
         traceTASK_SWITCHED_IN();
 
+        
         /* Setting up the timer tick is hardware specific and thus in the
          * portable interface. */
         xPortStartScheduler();
+        
+        //jzx this is the bug
 
         /* In most cases, xPortStartScheduler() will not return. If it
          * returns pdTRUE then there was not enough heap memory available
