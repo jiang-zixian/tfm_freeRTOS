@@ -58,7 +58,7 @@ extern uint32_t SystemCoreClock;
 #define configENABLE_TRUSTZONE 0
 #define configRUN_FREERTOS_SECURE_ONLY 0
 #define configENABLE_FPU 0
-#define configENABLE_MPU 1
+#define configENABLE_MPU 0
 #define configUSE_MPU_WRAPPERS_V1 (1)
 /* See https://freertos.org/a00110.html#configPROTECTED_KERNEL_OBJECT_POOL_SIZE
  * for details. */

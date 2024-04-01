@@ -1,6 +1,6 @@
 #ifndef FUNC_H
 #define FUNC_H
-#include <stdint.h>
+#include "stm32l562xx.h"
 
 typedef struct {
     uint32_t addr;

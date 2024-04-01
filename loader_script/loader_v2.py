@@ -7,7 +7,7 @@ output_relocation_info_path = (
 output_functions_info_path = (
     "platform/ext/target/stm/aslr_freertos_nsapp/loader/src/func.c"
 )
-need_relocation_secions = ["text"]
+need_relocation_secions = ["text", "privileged_functions","freertos_system_calls"]
 
 code_start = 0x08005000
 

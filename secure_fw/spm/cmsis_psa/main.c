@@ -10,6 +10,7 @@
 #include "fih.h"
 #include "loader.h"
 #include "divide.h"
+#include "dwt.h"
 #include "memory_symbols.h"
 #include "spm.h"
 #include "sys/_stdint.h"
@@ -21,6 +22,7 @@
 #include "tfm_spm_log.h"
 #include "tfm_version.h"
 #include "target_cfg.h"
+
 uintptr_t spm_boundary = (uintptr_t)NULL;
 
 static fih_int tfm_core_init(void) {
@@ -115,18 +117,15 @@ int main(void) {
         tfm_core_panic();
     }
 #endif
-    // uint32_t __text_address__ = 0x8055000;
-    // uint32_t offset1 = 0x17fae000;
-    // uint32_t relocate_address1 = __text_address__ + offset1; // 0x20003000
-    // copy_text2ram(relocate_address1, __text_address__, 0x1000);
-    // relocate(offset1);
 
-    uint32_t __text_address__ = 0x8055000;
-    uint32_t offset_a = 0x17fae000; // 0x20003000
-    uint32_t offset_b = 0x17fb0000; // 0x20005000
+    int32_t  __text_address__ = 0x8055000;
+    uint32_t address_a = 0x20005000;
+    uint32_t address_b = 0x20015000;
+    uint32_t offset_a = address_a - __text_address__;
+    uint32_t offset_b = address_b - __text_address__;
 
-    copy_text2ram(__text_address__ + offset_a, __text_address__, 0x1000);
-    copy_text2ram(__text_address__ + offset_b, __text_address__, 0x1000);
+    copy_text2ram(address_a, __text_address__, 0x5000);
+    copy_text2ram(address_b, __text_address__, 0x5000);
     divide();
     relocation(offset_a, offset_b);
     /* Move to handler mode for further SPM initialization. */

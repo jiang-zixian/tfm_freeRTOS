@@ -32,20 +32,18 @@ __heap_size__  = NS_HEAP_SIZE;
 __stack_size__ = NS_STACK_SIZE;
 
 /* Library configurations */
-GROUP(libgcc.a libc.a libm.a libnosys.a)
+GROUP(libc.a libm.a libnosys.a)
 
 ENTRY(Reset_Handler)
 
 SECTIONS
 {
-    .text :
+    .text : ALIGN(32)
     {
         KEEP(*(.vectors))
         __Vectors_End = .;
         __Vectors_Size = __Vectors_End - __Vectors;
         __end__ = .;
-
-        *(.text*)
 
         KEEP(*(.init))
         KEEP(*(.fini))
@@ -65,9 +63,40 @@ SECTIONS
          *(SORT(.dtors.*))
          *(.dtors)
 
-        *(.rodata*)
-
         KEEP(*(.eh_frame*))
+    } > FLASH
+
+    /* Privileged functions - Section needs to be 32 byte aligned to satisfy MPU requirements. */
+    .privileged_functions : ALIGN(32)
+    {
+        . = ALIGN(32);
+        __privileged_functions_start__ = .;
+        *(privileged_functions)
+        . = ALIGN(32);
+        /* End address must be the last address in the region, therefore, -1. */
+        __privileged_functions_end__ = . - 1;
+    } > FLASH
+
+       /* FreeRTOS System calls - Section needs to be 32 byte aligned to satisfy MPU requirements. */
+    .freertos_system_calls : ALIGN(32)
+    {
+        . = ALIGN(32);
+        __syscalls_flash_start__ = .;
+        *(freertos_system_calls)
+        . = ALIGN(32);
+        /* End address must be the last address in the region, therefore, -1. */
+        __syscalls_flash_end__ = . - 1;
+    } > FLASH
+
+    .text : ALIGN(32)
+    {
+        . = ALIGN(32);
+        __unprivileged_flash_start__ = .;
+        *(.text*)
+        *(.rodata .rodata.* .constdata .constdata.*)
+        . = ALIGN(32);
+        /* End address must be the last address in the region, therefore, -1. */
+        __unprivileged_flash_end__ = . - 1;
     } > FLASH
 
     .ARM.extab :
@@ -124,6 +153,18 @@ SECTIONS
     .data (NS_DATA_START+NS_NO_INIT_DATA_SIZE) : AT (__etext)
     {
         __data_start__ = .;
+
+
+
+        /* Privileged data - It needs to be 32 byte aligned to satisfy MPU requirements. */
+        . = ALIGN(32);
+        __privileged_sram_start__ = .;
+        *(privileged_data)
+        . = ALIGN(32);
+        /* End address must be the last address in the region, therefore, -1. */
+        __privileged_sram_end__ = . - 1;
+
+
         *(vtable)
         *(.data*)
 

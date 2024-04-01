@@ -1,7 +1,6 @@
 #ifndef RELOCATION_H
 #define RELOCATION_H
-#include <stdint.h>
-
+#include "stm32l562xx.h"
 typedef struct {
     uint32_t addr;
     uint32_t value;

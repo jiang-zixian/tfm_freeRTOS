@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 3.15)
 project(freertos)
+
 # User is responsible to one mandatory option:
-#   FREERTOS_PORT, if not specified and native port detected, uses the native compile.
+# FREERTOS_PORT, if not specified and native port detected, uses the native compile.
 #
 # User is responsible for one library target:
-#   freertos_config ,typically an INTERFACE library
+# freertos_config ,typically an INTERFACE library
 #
 # DEPRECATED: FREERTOS_CONFIG_FILE_DIRECTORY - but still supported if no freertos_config defined for now.
-#             May be removed at some point in the future.
+# May be removed at some point in the future.
 #
 # User can choose which heap implementation to use (either the implementations
 # included with FreeRTOS [1..5] or a custom implementation) by providing the
@@ -20,9 +21,8 @@ add_library(freertos_config INTERFACE)
 target_include_directories(freertos_config SYSTEM INTERFACE config) # 请替换为您的FreeRTOSConfig.h文件所在的实际路径
 target_compile_definitions(freertos_config INTERFACE projCOVERAGE_TEST=0)
 
-if(NOT TARGET freertos_config )
-    if (NOT DEFINED FREERTOS_CONFIG_FILE_DIRECTORY )
-
+if(NOT TARGET freertos_config)
+    if(NOT DEFINED FREERTOS_CONFIG_FILE_DIRECTORY)
         message(FATAL_ERROR " freertos_config target not specified.  Please specify a cmake target that defines the include directory for FreeRTOSConfig.h:\n"
             "  add_library(freertos_config INTERFACE)\n"
             "  target_include_directories(freertos_config SYSTEM\n"
@@ -203,6 +203,7 @@ if(NOT FREERTOS_PORT)
         " CDK_THEAD_CK802                  - Compiler: CDK           Target: T-head CK802\n"
         " XCC_XTENSA                       - Compiler: XCC           Target: Xtensa\n"
         " WIZC_PIC18                       - Compiler: WizC          Target: PIC18")
+
     # Native FREERTOS_PORT for Linux and Windows MINGW builds
     if(UNIX)
         message(STATUS " Auto-Detected Unix, setting FREERTOS_PORT=GCC_POSIX")
@@ -211,41 +212,33 @@ if(NOT FREERTOS_PORT)
         message(STATUS " Auto-Detected MINGW, setting FREERTOS_PORT=MSVC_MINGW")
         set(FREERTOS_PORT MSVC_MINGW CACHE STRING "FreeRTOS port name")
     endif()
-elseif((FREERTOS_PORT STREQUAL "A_CUSTOM_PORT") AND (NOT TARGET freertos_kernel_port) )
+elseif((FREERTOS_PORT STREQUAL "A_CUSTOM_PORT") AND(NOT TARGET freertos_kernel_port))
     message(FATAL_ERROR " FREERTOS_PORT is set to A_CUSTOM_PORT. Please specify the custom port target with all necessary files. For example:\n"
-    " Assuming a directory of:\n"
-    "  FreeRTOSCustomPort/\n"
-    "    CMakeLists.txt\n"
-    "    port.c\n"
-    "    portmacro.h\n"
-    " Where FreeRTOSCustomPort/CMakeLists.txt is a modified version of:\n"
-    "   add_library(freertos_kernel_port STATIC)\n"
-    "   target_sources(freertos_kernel_port\n"
-    "     PRIVATE\n"
-    "       port.c\n"
-    "       portmacro.h)\n"
-    "   target_include_directories(freertos_kernel_port\n"
-    "     PUBLIC\n"
-    "      .)\n"
-    "   target_link_libraries(freertos_kernel_port\n"
-    "     PRIVATE\n"
-    "       freertos_kernel_include)")
+        " Assuming a directory of:\n"
+        "  FreeRTOSCustomPort/\n"
+        "    CMakeLists.txt\n"
+        "    port.c\n"
+        "    portmacro.h\n"
+        " Where FreeRTOSCustomPort/CMakeLists.txt is a modified version of:\n"
+        "   add_library(freertos_kernel_port STATIC)\n"
+        "   target_sources(freertos_kernel_port\n"
+        "     PRIVATE\n"
+        "       port.c\n"
+        "       portmacro.h)\n"
+        "   target_include_directories(freertos_kernel_port\n"
+        "     PUBLIC\n"
+        "      .)\n"
+        "   target_link_libraries(freertos_kernel_port\n"
+        "     PRIVATE\n"
+        "       freertos_kernel_include)")
 endif()
-
 
 add_library(freertos_kernel STATIC)
 target_compile_options(freertos_kernel
     PUBLIC
-    -mlong-calls
-    -fno-jump-tables
-    -fno-optimize-sibling-calls
-    -fno-tree-vectorize
-    -O0
-    -fno-inline
-    -fno-lto
 )
-target_link_options(freertos_kernel PUBLIC -fno-lto)
-########################################################################
+
+# #######################################################################
 # Overall Compile Options
 # Note the compile option strategy is to error on everything and then
 # Per library opt-out of things that are warnings/errors.
@@ -256,26 +249,29 @@ target_link_options(freertos_kernel PUBLIC -fno-lto)
 # Other options are https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_COMPILER_ID.html#variable:CMAKE_%3CLANG%3E_COMPILER_ID
 # Naming of compilers translation map:
 #
-#   FreeRTOS    | CMake
-#   -------------------
-#   CCS         | ?TBD?
-#   GCC         | GNU, Clang, *Clang Others?
-#   IAR         | IAR
-#   Keil        | ARMCC
-#   MSVC        | MSVC # Note only for MinGW?
-#   Renesas     | ?TBD?
-
+# FreeRTOS    | CMake
+# -------------------
+# CCS         | ?TBD?
+# GCC         | GNU, Clang, *Clang Others?
+# IAR         | IAR
+# Keil        | ARMCC
+# MSVC        | MSVC # Note only for MinGW?
+# Renesas     | ?TBD?
 target_compile_options(freertos_kernel PRIVATE
-    ### Gnu/Clang C Options
+
+    -fno-jump-tables
+
+    # -mcmodel=small
+    # -fno-pic
+
+    # ## Gnu/Clang C Options
     $<$<COMPILE_LANG_AND_ID:C,GNU>:-fdiagnostics-color=always>
     $<$<COMPILE_LANG_AND_ID:C,Clang>:-fcolor-diagnostics>
-
-    $<$<COMPILE_LANG_AND_ID:C,GNU,Clang>:-mlong-calls>
-    $<$<COMPILE_LANG_AND_ID:C,GNU,Clang>:-fno-jump-tables>
 
     $<$<COMPILE_LANG_AND_ID:C,Clang,GNU>:-Wall>
     $<$<COMPILE_LANG_AND_ID:C,Clang,GNU>:-Wextra>
     $<$<COMPILE_LANG_AND_ID:C,Clang,GNU>:-Wpedantic>
+
     # $<$<COMPILE_LANG_AND_ID:C,Clang,GNU>:-Werror>
     $<$<COMPILE_LANG_AND_ID:C,Clang,GNU>:-Wconversion>
     $<$<COMPILE_LANG_AND_ID:C,Clang>:-Weverything>
@@ -288,8 +284,7 @@ target_compile_options(freertos_kernel PRIVATE
     $<$<COMPILE_LANG_AND_ID:C,Clang>:-Wno-cast-align>
 )
 
-
-########################################################################
+# #######################################################################
 add_subdirectory(include)
 add_subdirectory(portable)
 
@@ -302,21 +297,22 @@ target_sources(freertos_kernel PRIVATE
     tasks.c
     timers.c
 )
-target_sources(freertos_kernel PRIVATE 
+target_sources(freertos_kernel PRIVATE
     portable/Common/mpu_wrappers.c)
-if (DEFINED FREERTOS_HEAP )
+
+if(DEFINED FREERTOS_HEAP)
     # User specified a heap implementation add heap implementation to freertos_kernel.
     target_sources(freertos_kernel PRIVATE
+
         # If FREERTOS_HEAP is digit between 1 .. 5 - it is heap number, otherwise - it is path to custom heap source file
         $<IF:$<BOOL:$<FILTER:${FREERTOS_HEAP},EXCLUDE,^[1-5]$>>,${FREERTOS_HEAP},portable/MemMang/heap_${FREERTOS_HEAP}.c>
     )
 endif()
 
-
 target_link_libraries(freertos_kernel
     PUBLIC
-        freertos_kernel_port
-        freertos_kernel_include
+    freertos_kernel_port
+    freertos_kernel_include
 )
 
-########################################################################
+# #######################################################################
