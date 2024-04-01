@@ -5,6 +5,15 @@ TEST_TARGET_ARG="$1"
 CURRENT_DIR=/home/jiangzixian/tfm_freeRTOS_dwt
 STM32_Programmer_CLI_PATH=/mnt/f/"Program Files"/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin
 
+# 检查当前目录下是否存在 build, build_ns, build_s 文件夹
+if [[ ! -d "build" && ! -d "build_ns" && ! -d "build_s" ]]; then
+  # 如果不存在，则创建这些文件夹
+  mkdir build build_ns build_s
+  echo "mkdir the folders"
+else
+  echo "folders exist"
+fi
+
 cd build &&
 sudo rm CMakeCache.txt&&sudo cmake .. -DTFM_PLATFORM=stm/aslr_freertos_nsapp -DBL2=OFF -DNS=OFF -DNS_APP=ON -DTFM_TOOLCHAIN_FILE=../toolchain_GNUARM_No.cmake -DFREERTOS_PORT=GCC_ARM_CM33_NTZ_NONSECURE -DFREERTOS_HEAP=4 -DTEST_TARGET="${TEST_TARGET_ARG}" -DENABLE_RE=ON&&sudo make -j &&
 
