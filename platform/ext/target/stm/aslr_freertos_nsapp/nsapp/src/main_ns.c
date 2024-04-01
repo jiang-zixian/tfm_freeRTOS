@@ -55,13 +55,7 @@ void testThread1(void) {
 int main() {
     MX_GPIO_Init();
 
-    //testThread1();
-
     BaseType_t xReturned;
-    // while (1) {
-    //     HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_3);
-    //     spin_100000();
-    // }
 
     xReturned = xTaskCreate(
                     testThread2,       /* Function that implements the task. */
