@@ -15,7 +15,7 @@ else
 fi
 
 cd build &&
-sudo rm CMakeCache.txt&&sudo cmake .. -DTFM_PLATFORM=stm/aslr_freertos_nsapp -DBL2=OFF -DNS=OFF -DNS_APP=ON -DTFM_TOOLCHAIN_FILE=../toolchain_GNUARM_No.cmake -DFREERTOS_PORT=GCC_ARM_CM33_NTZ_NONSECURE -DFREERTOS_HEAP=4 -DTEST_TARGET="${TEST_TARGET_ARG}" -DENABLE_RE=ON&&sudo make -j &&
+sudo rm CMakeCache.txt&&sudo cmake .. -DTFM_PLATFORM=stm/aslr_freertos_nsapp -DBL2=OFF -DNS=OFF -DNS_APP=ON -DTFM_TOOLCHAIN_FILE=../toolchain_GNUARM_Yes.cmake -DFREERTOS_PORT=GCC_ARM_CM33_NTZ_NONSECURE -DFREERTOS_HEAP=4 -DTEST_TARGET="${TEST_TARGET_ARG}" -DENABLE_RE=ON&&sudo make -j &&
 
 cd "${CURRENT_DIR}"/build/bin &&
 readelf -s ns_app.elf | grep FUNC > "${CURRENT_DIR}"/platform/ext/target/stm/aslr_freertos_nsapp/loader/script/func_info.txt &&
@@ -27,11 +27,11 @@ sudo ./loader_v2.py &&
 
 cd "${CURRENT_DIR}"/build_ns &&
 
-sudo cmake .. -DTFM_PLATFORM=stm/aslr_freertos_nsapp -DBL2=OFF -DNS=OFF -DNS_APP=ON -DTFM_TOOLCHAIN_FILE=../toolchain_GNUARM_No.cmake -DFREERTOS_PORT=GCC_ARM_CM33_NTZ_NONSECURE -DFREERTOS_HEAP=4 -DTEST_TARGET="${TEST_TARGET_ARG}" -DENABLE_RE=OFF&&sudo make -j &&
+sudo rm CMakeCache.txt &&sudo cmake .. -DTFM_PLATFORM=stm/aslr_freertos_nsapp -DBL2=OFF -DNS=OFF -DNS_APP=ON -DTFM_TOOLCHAIN_FILE=../toolchain_GNUARM_Yes.cmake -DFREERTOS_PORT=GCC_ARM_CM33_NTZ_NONSECURE -DFREERTOS_HEAP=4 -DTEST_TARGET="${TEST_TARGET_ARG}" -DENABLE_RE=OFF&&sudo make -j &&
 
 cd "${CURRENT_DIR}"/build_s &&
 
-sudo cmake .. -DTFM_PLATFORM=stm/aslr_freertos_nsapp -DBL2=OFF -DNS=OFF -DNS_APP=ON -DTFM_TOOLCHAIN_FILE=../toolchain_GNUARM_No.cmake -DFREERTOS_PORT=GCC_ARM_CM33_NTZ_NONSECURE -DFREERTOS_HEAP=4 -DTEST_TARGET="${TEST_TARGET_ARG}" -DENABLE_RE=OFF&&sudo make -j &&
+sudo rm CMakeCache.txt &&sudo cmake .. -DTFM_PLATFORM=stm/aslr_freertos_nsapp -DBL2=OFF -DNS=OFF -DNS_APP=ON -DTFM_TOOLCHAIN_FILE=../toolchain_GNUARM_No.cmake -DFREERTOS_PORT=GCC_ARM_CM33_NTZ_NONSECURE -DFREERTOS_HEAP=4 -DTEST_TARGET="${TEST_TARGET_ARG}" -DENABLE_RE=OFF&&sudo make -j &&
 
 llvm-objdump -s -d "${CURRENT_DIR}"/build_ns/bin/ns_app.elf > "${CURRENT_DIR}"/build_ns/bin/ns_app.asm &&
 llvm-objdump -s -d "${CURRENT_DIR}"/build_s/bin/tfm_s.elf > "${CURRENT_DIR}"/build_s/bin/tfm_s.asm &&
