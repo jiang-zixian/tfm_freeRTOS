@@ -128,7 +128,7 @@ int main(void) {
     copy_text2ram(__text_address__ + offset_a, __text_address__, 0x4000);
     copy_text2ram(__text_address__ + offset_b, __text_address__, 0x4000);
     divide();
-    //relocation(offset_a, offset_b);
+    relocation(offset_a, offset_b);
     /* Move to handler mode for further SPM initialization. */
     tfm_core_handler_mode();
 

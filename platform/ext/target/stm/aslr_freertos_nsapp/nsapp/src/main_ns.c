@@ -57,6 +57,7 @@ int main() {
 
     BaseType_t xReturned;
 
+
     xReturned = xTaskCreate(
                     testThread2,       /* Function that implements the task. */
                     "testThread2",          /* Text name for the task. */
