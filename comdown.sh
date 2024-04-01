@@ -1,11 +1,11 @@
 #!/bin/bash
-STM32_Programmer_CLI_PATH="/mnt/f/stm32prog/bin"
+STM32_Programmer_CLI_PATH="/mnt/f/'Program Files'/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin"
 STM32_GDB_server_PATH="/mnt/f/gdb-server/bin"
 Build_PATH="build"
 for arg in "$@"; do
     if [[ "$arg" == "-c" ]] || [[ "$arg" == "--compile" ]]; then
         cmake --build build_re
-        /home/zys/miniconda3/bin/python loder_script/loader_v2.py
+        python3 loder_script/loader_v2.py
         cmake --build build
         echo "Compile done"
         break
