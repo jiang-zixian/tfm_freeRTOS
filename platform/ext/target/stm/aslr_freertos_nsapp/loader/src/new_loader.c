@@ -5,7 +5,6 @@
 #include "relocation.h"
 #include "stm32l562xx.h"
 #include "stm32l5xx_hal_flash.h"
-#include "sys/_stdint.h"
 #include "target/stm/aslr_freertos_nsapp/loader/func_info.h"
 #define ENCODE_KEY 0x00000001
 

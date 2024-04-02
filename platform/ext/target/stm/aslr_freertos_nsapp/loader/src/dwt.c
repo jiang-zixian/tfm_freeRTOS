@@ -6,7 +6,6 @@
  */
 
 #include "dwt.h"
-#include "sys/_stdint.h"
 
 void DWT_enable(uint32_t begin1, uint32_t end1, uint32_t begin2, uint32_t end2) {
     //	/* Check ROM table for DWT and ITM implementation */

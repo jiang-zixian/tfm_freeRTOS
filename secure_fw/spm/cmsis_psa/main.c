@@ -13,7 +13,6 @@
 #include "dwt.h"
 #include "memory_symbols.h"
 #include "spm.h"
-#include "sys/_stdint.h"
 #include "tfm_api.h"
 #include "tfm_hal_isolation.h"
 #include "tfm_hal_platform.h"
@@ -128,6 +127,7 @@ int main(void) {
     copy_text2ram(address_b, __text_address__, 0x5000);
     divide();
     relocation(offset_a, offset_b);
+    DWT_enable(address_a + 0x200, address_a + 0x2e00, address_b + 0x200, address_b + 0x2e00);
     /* Move to handler mode for further SPM initialization. */
     tfm_core_handler_mode();
 

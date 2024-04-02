@@ -830,11 +830,14 @@ void SVC_Handler(void) /* __attribute__ (( naked )) PRIVILEGED_FUNCTION */
                    "   ite eq                                          \n"
                    "   mrseq r0, msp                                   \n"
                    "   mrsne r0, psp                                   \n"
-                   "   ldr r1, svchandler_address_const\n"
+                   //  "   ldr r1, svchandler_address_const\n"
+                   " MOVW    r1, :lower16:vPortSVCHandler_C\n"
+                   " MOVT    r1, :upper16:vPortSVCHandler_C\n"
                    "   bx r1                                           \n"
                    "                                                   \n"
                    "   .align 4                                        \n"
-                   "svchandler_address_const: .word vPortSVCHandler_C  \n");
+                   //  "svchandler_address_const: .word vPortSVCHandler_C  \n"
+    );
 }
 
 #endif /* ( configENABLE_MPU == 1 ) && ( configUSE_MPU_WRAPPERS_V1 == 0 ) */
