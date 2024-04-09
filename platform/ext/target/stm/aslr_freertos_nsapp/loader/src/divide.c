@@ -12,5 +12,13 @@ void divide() {
             func_info[i].region = 0;
         }
         
+        //memset里貌似有读lr的操作，memset之前应该也不能蹦床（本人没试过memset之前有蹦床会怎么样）
+        if(func_info[i].addr==0x805859d/*memset*/||
+        func_info[i].addr==0x8055a1d/*prvCreateTask*/||
+        func_info[i].addr==0x8056907/*prvInitialiseNewTask*/){
+            func_info[i].region = 0;
+        }
+
+        
     }
 }
