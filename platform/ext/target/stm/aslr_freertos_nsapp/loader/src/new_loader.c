@@ -255,7 +255,7 @@ void relocation(uint32_t offset_a, uint32_t offset_b,uint32_t offset_c) {
                     if(relocation_info[i].value!=0x805586b){
                         *((uint32_t*)(relocation_info[i].addr + offset_a)) =
                             address_calculate(relocation_info[i].addr,
-                                          trampoline_A_B_addr + offset_c - offset_a);
+                                          trampoline_A_B_addr + offset_b - offset_a);
                         *((uint32_t*)(relocation_info[i].addr + offset_a -8))=movw_trampoline(relocation_info[i].value+offset_b);
                         *((uint32_t*)(relocation_info[i].addr + offset_a -4))=(uint32_t)(0x0801f2c2);//0x2001
                     }else{
@@ -277,7 +277,7 @@ void relocation(uint32_t offset_a, uint32_t offset_b,uint32_t offset_c) {
                         //                   relocation_info[i].value + offset_a - offset_b);
                     *((uint32_t*)(relocation_info[i].addr + offset_b)) =
                         address_calculate(relocation_info[i].addr,
-                                        trampoline_B_A_addr + offset_c - offset_b);
+                                        trampoline_B_A_addr + offset_a - offset_b);
                     *((uint32_t*)(relocation_info[i].addr + offset_b -8))=movw_trampoline(relocation_info[i].value+offset_a);
                     *((uint32_t*)(relocation_info[i].addr + offset_b -4))=(uint32_t)(0x0800f2c2);//0x2000
                     }else{

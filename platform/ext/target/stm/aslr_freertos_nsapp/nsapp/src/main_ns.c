@@ -13,9 +13,9 @@ __attribute__((section(".tram_section"))) __attribute__((naked)) void trampoline
 {
     __asm volatile(
         "str      lr,[r10]                   \n" /* Clear RAM before jump */
-        "add      r10,#32                   \n" /* Clear RAM before jump */
+        "add      r10,#8                   \n" /* Clear RAM before jump */
         "blx      r8                   \n" /* Clear RAM before jump */
-        "sub      r10,#32                   \n" /* Clear RAM before jump */
+        "sub      r10,#8                   \n" /* Clear RAM before jump */
         "ldr      pc,[r10]                      \n" /* Jump to Reset_handler */
     );
 }
@@ -24,9 +24,9 @@ __attribute__((section(".tram_section"))) __attribute__((naked)) void trampoline
 {
     __asm volatile(
         "str      lr,[r10]                   \n" /* Clear RAM before jump */
-        "add      r10,#32                   \n" /* Clear RAM before jump */
+        "add      r10,#8                   \n" /* Clear RAM before jump */
         "blx      r8                   \n" /* Clear RAM before jump */
-        "sub      r10,#32                   \n" /* Clear RAM before jump */
+        "sub      r10,#8                   \n" /* Clear RAM before jump */
         "ldr      pc,[r10]                      \n" /* Jump to Reset_handler */
     );
 }
@@ -56,9 +56,9 @@ void spin_100000() {
 
 void testThread2(void* pvParameters) {
     int a = 0;
-    initialise_benchmark();
-    int result = benchmark();
-    verify_benchmark(result);
+    // initialise_benchmark();
+    // int result = benchmark();
+    // verify_benchmark(result);
     while (1) {
         a++;
         HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_3);

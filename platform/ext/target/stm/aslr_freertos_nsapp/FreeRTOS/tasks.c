@@ -40,6 +40,7 @@
 #include "task.h"
 #include "timers.h"
 #include "stack_macros.h"
+uint32_t r10_addr=0x20010000;
 
 /* Lint e9021, e961 and e750 are suppressed as a MISRA exception justified
  * because the MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined
@@ -1683,6 +1684,32 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
 
             prvInitialiseNewTask( pxTaskCode, pcName, ( uint32_t ) usStackDepth, pvParameters, uxPriority, pxCreatedTask, pxNewTCB, NULL );
         }
+
+        //jzx
+        //uintptr_t E = (uintptr_t)pxTaskDefinition->puxStackBuffer;
+        uintptr_t A = (uintptr_t)pxNewTCB;  // 将指针转换为 uintptr_t 类型
+
+        // 读取地址为 A 的内存中的值 B
+        uintptr_t B = *((uintptr_t*)A);
+
+        // 计算 C 的值
+        uintptr_t C = B +32;//r10
+
+        // 定义指向地址为 C 的内存位置的指针
+        uintptr_t* ptr = (uintptr_t*)C;
+
+        // 向地址为 C 的内存位置写入值 0x200023b0
+        *ptr = r10_addr;
+        r10_addr+=0x00000500;
+
+        // 计算 C 的值
+        uintptr_t D = B +28;//r9
+
+        // 定义指向地址为 C 的内存位置的指针
+        ptr = (uintptr_t*)D;
+
+        // 向地址为 C 的内存位置写入值 0x200023b0
+        *ptr = 0x1;
 
         return pxNewTCB;
     }

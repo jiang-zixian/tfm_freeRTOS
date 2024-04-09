@@ -999,8 +999,8 @@ void vPortSVCHandler_C(uint32_t* pulCallerStackAddress) /* PRIVILEGED_FUNCTION p
 
     /* Register are stored on the stack in the following order - R0, R1, R2, R3,
      * R12, LR, PC, xPSR. */
-    ulPC = pulCallerStackAddress[portOFFSET_TO_PC];
-    // ucSVCNumber = *((uint8_t*)ulPC - 2);
+    //ulPC = pulCallerStackAddress[portOFFSET_TO_PC];
+    //ucSVCNumber = *((uint8_t*)ulPC - 2);
     ucSVCNumber = 2;
     switch (ucSVCNumber) {
 #if (configENABLE_TRUSTZONE == 1)
