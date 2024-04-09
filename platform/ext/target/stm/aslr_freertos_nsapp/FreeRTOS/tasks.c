@@ -1711,6 +1711,12 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
             }
             #endif
 
+                    // Insert nop instruction here
+        // __asm("nop");
+        // __asm("nop");
+        // __asm("movw r8,#25069");
+        // __asm("movt r8,#8192");
+
             prvAddNewTaskToReadyList( pxNewTCB );
             xReturn = pdPASS;
         }

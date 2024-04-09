@@ -46,7 +46,7 @@ if(ENABLE_RE)
         -r
         -e Reset_Handler
         $<$<C_COMPILER_ID:GNU>:-Wl,-Map=${CMAKE_BINARY_DIR}/bin/ns_app.map>
-        $<$<C_COMPILER_ID:Clang>:-Wl,-Map=${CMAKE_BINARY_DIR}/bin/ns_app.map>
+        #$<$<C_COMPILER_ID:Clang>:-Wl,-Map=${CMAKE_BINARY_DIR}/bin/ns_app.map>
         $<$<C_COMPILER_ID:ARMClang>:--map>
         $<$<C_COMPILER_ID:IAR>:--map\;${CMAKE_BINARY_DIR}/bin/ns_app.map>
     )
@@ -56,7 +56,7 @@ else()
 
         # -fPIE
         $<$<C_COMPILER_ID:GNU>:-Wl,-Map=${CMAKE_BINARY_DIR}/bin/ns_app.map>
-        $<$<C_COMPILER_ID:Clang>:-Wl,-Map=${CMAKE_BINARY_DIR}/bin/ns_app.map>
+        #$<$<C_COMPILER_ID:Clang>:-Wl,-Map=${CMAKE_BINARY_DIR}/bin/ns_app.map>
         $<$<C_COMPILER_ID:ARMClang>:--map>
         $<$<C_COMPILER_ID:IAR>:--map\;${CMAKE_BINARY_DIR}/bin/ns_app.map>
     )
@@ -111,7 +111,7 @@ target_link_libraries(ns_app
 set(TEST_TARGET "" CACHE STRING "Test target to build")
 
 # 分割字符串 _
-string(REPLACE "_" ";" TEST_TARGET_LIST ${TEST_TARGET})
+string(REPLACE "-" ";" TEST_TARGET_LIST ${TEST_TARGET})
 list(GET TEST_TARGET_LIST 0 FIRST_PART)
 
 # 添加测试

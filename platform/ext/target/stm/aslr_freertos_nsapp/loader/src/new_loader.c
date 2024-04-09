@@ -109,7 +109,124 @@ uint32_t movt_calculate(uint32_t ori_val, uint32_t addr) {
     return new_val;
 }
 
-void relocation(uint32_t offset_a, uint32_t offset_b) {
+uint32_t movw_trampoline(uint32_t addr)
+{
+    addr=addr&0xFFFF;
+    uint32_t imm8=addr& 0xFF;
+    uint32_t i=(addr>>11)&0x1;
+    uint32_t imm4 = (addr >> 12) & 0xF;
+    uint32_t imm3 = (addr >> 8) & 0x7;
+    //uint32_t r= (0x4<<28)|(imm4<<24)|(0xf<<24)|((i*4+2)<<16)|(imm8<<8)|(imm3<<4)|8;
+    uint32_t r=(imm3<<28)|(8<<24)|(imm8<<16)|(0xf<<12)|((i*4+2)<<8)|(0x4<<4)|(imm4);
+    if(r&0x1==0){
+        r+=1;
+    }
+    return r;
+}
+
+// void relocation(uint32_t offset_a, uint32_t offset_b) {
+//     *((uint32_t*)(relocation_info[0].addr + offset_a)) =
+//         relocation_info[0].value;
+//     for (int i = 1; i < table_size; ++i) {
+//         // which range of the identifier
+//         if (relocation_info[i].type == 0) { // exception entry
+//             if (in_range(relocation_info[i].value) == 0) {
+//                 *((uint32_t*)(relocation_info[i].addr + offset_a)) =
+//                     relocation_info[i].value + offset_a;
+//             } else {
+//                 *((uint32_t*)(relocation_info[i].addr + offset_a)) =
+//                     relocation_info[i].value + offset_b;
+//             }
+//         } else if (relocation_info[i].type == 1) { // func pointer
+
+//         } else if (relocation_info[i].type == 2) { // data under function
+
+//         } else if (relocation_info[i].type == 3) { // data of some info, like "heap"
+
+//         } else if (relocation_info[i].type == 4) { // func call
+//             if (in_range(relocation_info[i].addr) == 0) {
+//                 if (i == 142) {
+//                     int a = i;
+//                     a += 1;
+//                 }
+//                 if (in_range(relocation_info[i].value) == 1) {
+//                     *((uint32_t*)(relocation_info[i].addr + offset_a)) =
+//                             address_calculate(relocation_info[i].addr,
+//                                           trampoline_A_B_addr + offset_b - offset_a);
+//                         // uint32_t new_addr=address_calculate(relocation_info[i].addr,
+//                         //                   relocation_info[i].value + offset_b - offset_a);
+//                         *((uint32_t*)(relocation_info[i].addr + offset_a -8))=movw_trampoline(relocation_info[i].value+offset_b);
+//                         *((uint32_t*)(relocation_info[i].addr + offset_a -4))=(uint32_t)(0x0801f2c2);//0x2001
+//                 } else {
+                    
+//                     uint32_t new_addr= address_calculate(relocation_info[i].addr,
+//                                         relocation_info[i].value);
+//                     *((uint32_t*)(relocation_info[i].addr + offset_a)) = new_addr;
+//                 }
+//             } else if (in_range(relocation_info[i].addr) == 1) {
+//                 if (in_range(relocation_info[i].value) == 0) {
+//                     *((uint32_t*)(relocation_info[i].addr + offset_b)) =
+//                             address_calculate(relocation_info[i].addr,
+//                                           trampoline_B_A_addr + offset_a - offset_b);
+//                         *((uint32_t*)(relocation_info[i].addr + offset_b -8))=movw_trampoline(relocation_info[i].value+offset_a);
+//                         *((uint32_t*)(relocation_info[i].addr + offset_b -4))=(uint32_t)(0x0800f2c2);//0x2000
+//                 } else {
+//                         *((uint32_t*)(relocation_info[i].addr + offset_b)) =
+//                         address_calculate(relocation_info[i].addr,
+//                                           relocation_info[i].value);
+//                 }
+//             }
+//         } else if (relocation_info[i].type == 5) { // absoultably address: movw
+//             if (in_range(relocation_info[i].addr) == 0) {
+//                 if (in_range(relocation_info[i].value) == 1) {
+//                     *((uint32_t*)(relocation_info[i].addr + offset_a)) =
+//                         movw_calculate(*((uint32_t*)(relocation_info[i].addr)),
+//                                        relocation_info[i].value + offset_b);
+//                 } else if (in_range(relocation_info[i].value) == 0) {
+//                     *((uint32_t*)(relocation_info[i].addr + offset_a)) =
+//                         movw_calculate(*((uint32_t*)(relocation_info[i].addr)),
+//                                        relocation_info[i].value + offset_a);
+//                 }
+//             } else if (in_range(relocation_info[i].addr) == 1) {
+//                 if (in_range(relocation_info[i].value) == 0) {
+//                     *((uint32_t*)(relocation_info[i].addr + offset_b)) =
+//                         movw_calculate(*((uint32_t*)(relocation_info[i].addr)),
+//                                        relocation_info[i].value + offset_a);
+//                 } else if (in_range(relocation_info[i].value) == 1) {
+//                     *((uint32_t*)(relocation_info[i].addr + offset_b)) =
+//                         movw_calculate(*((uint32_t*)(relocation_info[i].addr)),
+//                                        relocation_info[i].value + offset_b);
+//                 }
+//             }
+
+//         } else if (relocation_info[i].type == 6) { // absoulately address: mowt
+//             if (in_range(relocation_info[i].addr) == 0) {
+//                 if (in_range(relocation_info[i].value) == 1) {
+//                     *((uint32_t*)(relocation_info[i].addr + offset_a)) =
+//                         movt_calculate(*((uint32_t*)(relocation_info[i].addr)),
+//                                        relocation_info[i].value + offset_b);
+//                 } else if (in_range(relocation_info[i].value) == 0) {
+//                     *((uint32_t*)(relocation_info[i].addr + offset_a)) =
+//                         movt_calculate(*((uint32_t*)(relocation_info[i].addr)),
+//                                        relocation_info[i].value + offset_a);
+//                 }
+//             } else if (in_range(relocation_info[i].addr) == 1) {
+//                 if (in_range(relocation_info[i].value) == 0) {
+//                     *((uint32_t*)(relocation_info[i].addr + offset_b)) =
+//                         movt_calculate(*((uint32_t*)(relocation_info[i].addr)),
+//                                        relocation_info[i].value + offset_a);
+//                 } else if (in_range(relocation_info[i].value) == 1) {
+//                     *((uint32_t*)(relocation_info[i].addr + offset_b)) =
+//                         movt_calculate(*((uint32_t*)(relocation_info[i].addr)),
+//                                        relocation_info[i].value + offset_b);
+//                 }
+//             }
+//         } else {
+//         }
+//     }
+// }
+
+void relocation(uint32_t offset_a, uint32_t offset_b,uint32_t offset_c) {
     *((uint32_t*)(relocation_info[0].addr + offset_a)) =
         relocation_info[0].value;
     for (int i = 1; i < table_size; ++i) {
@@ -135,9 +252,18 @@ void relocation(uint32_t offset_a, uint32_t offset_b) {
                     a += 1;
                 }
                 if (in_range(relocation_info[i].value) == 1) {
+                    if(relocation_info[i].value!=0x805586b){
+                        *((uint32_t*)(relocation_info[i].addr + offset_a)) =
+                            address_calculate(relocation_info[i].addr,
+                                          trampoline_A_B_addr + offset_b - offset_a);
+                        *((uint32_t*)(relocation_info[i].addr + offset_a -8))=movw_trampoline(relocation_info[i].value+offset_b);
+                        *((uint32_t*)(relocation_info[i].addr + offset_a -4))=(uint32_t)(0x0801f2c2);//0x2001
+                    }else{
                     *((uint32_t*)(relocation_info[i].addr + offset_a)) =
                         address_calculate(relocation_info[i].addr,
                                           relocation_info[i].value + offset_b - offset_a);
+                    }
+                    
                 } else {
                     *((uint32_t*)(relocation_info[i].addr + offset_a)) =
                         address_calculate(relocation_info[i].addr,
@@ -145,9 +271,20 @@ void relocation(uint32_t offset_a, uint32_t offset_b) {
                 }
             } else if (in_range(relocation_info[i].addr) == 1) {
                 if (in_range(relocation_info[i].value) == 0) {
+                    if(relocation_info[i].value!=0x805586b){
+                        // *((uint32_t*)(relocation_info[i].addr + offset_b)) =
+                        // address_calculate(relocation_info[i].addr,
+                        //                   relocation_info[i].value + offset_a - offset_b);
                     *((uint32_t*)(relocation_info[i].addr + offset_b)) =
                         address_calculate(relocation_info[i].addr,
+                                        trampoline_B_A_addr + offset_a - offset_b);
+                    *((uint32_t*)(relocation_info[i].addr + offset_b -8))=movw_trampoline(relocation_info[i].value+offset_a);
+                    *((uint32_t*)(relocation_info[i].addr + offset_b -4))=(uint32_t)(0x0800f2c2);//0x2000
+                    }else{
+                        *((uint32_t*)(relocation_info[i].addr + offset_b)) =
+                        address_calculate(relocation_info[i].addr,
                                           relocation_info[i].value + offset_a - offset_b);
+                    }
                 } else {
                     *((uint32_t*)(relocation_info[i].addr + offset_b)) =
                         address_calculate(relocation_info[i].addr,

@@ -96,9 +96,11 @@ int main_ex(void) {
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
-    HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_12);
-    /* Insert delay 100 ms */
-    HAL_Delay(100);
+
+    HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_3);
+        for (int i = 0; i < 100000; i++) {
+        __ASM volatile("nop");
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

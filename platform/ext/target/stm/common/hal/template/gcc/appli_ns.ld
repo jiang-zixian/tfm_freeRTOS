@@ -70,6 +70,11 @@ SECTIONS
         KEEP(*(.eh_frame*))
     } > FLASH
 
+    tram_section :
+    {
+        KEEP(*(.tram_section*))  /* 将 custom_section 中的符号保留在此段 */
+    } > FLASH
+
     .ARM.extab :
     {
         *(.ARM.extab* .gnu.linkonce.armextab.*)

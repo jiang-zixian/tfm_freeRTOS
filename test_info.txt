@@ -1,0 +1,3 @@
+platform/ext/target/stm/aslr_freertos_nsapp/stm32example/RCCClockConfig
+platform/ext/target/stm/aslr_freertos_nsapp/stm32example/GPIOEXTI
+platform/ext/target/stm/aslr_freertos_nsapp/stm32example/GPIOIOToggle

@@ -109,7 +109,9 @@ int main_ex(void) {
   /* USER CODE BEGIN WHILE */
   while (1) {
     /* USER CODE END WHILE */
-
+    /* Toggle LED10 in an infinite loop */
+    BSP_LED_Toggle(LED10);
+    HAL_Delay(100);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

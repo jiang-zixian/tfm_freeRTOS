@@ -10,4 +10,6 @@ typedef struct {
 
 extern uint32_t    func_info_size;
 extern func_info_t func_info[];
+extern uint32_t          trampoline_A_B_addr;
+extern uint32_t          trampoline_B_A_addr;
 #endif

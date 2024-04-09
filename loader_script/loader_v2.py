@@ -1,15 +1,14 @@
+#!/usr/bin/python3
 from elftools.elf.elffile import ELFFile
 
-elf_path = "./build_re/bin/ns_app.elf"
+elf_path = "../build/bin/ns_app.elf"
 output_relocation_info_path = (
-    "platform/ext/target/stm/aslr_freertos_nsapp/loader/src/relocation.c"
+    "/home/jiangzixian/tfm_freeRTOS_dwt2/platform/ext/target/stm/aslr_freertos_nsapp/loader/src/relocation.c"
 )
 output_functions_info_path = (
-    "platform/ext/target/stm/aslr_freertos_nsapp/loader/src/func.c"
+    "/home/jiangzixian/tfm_freeRTOS_dwt2/platform/ext/target/stm/aslr_freertos_nsapp/loader/src/func.c"
 )
 need_relocation_secions = ["text"]
-
-code_start = 0x08005000
 
 
 def section_index(section, sections):
@@ -44,12 +43,18 @@ def output_relocation_info(info):
                 + "},"
                 + "  //"
                 + name
-                + "\n"
+                #+ "\n"
             )
+            if int(address, 16) > 0x20010000 and int(value, 16) < 0x20010000:
+                f.write(" B_A\n")
+            elif int(address, 16) < 0x20010000 and int(value, 16) > 0x20010000:
+                f.write(" A_B\n")
+            else:
+                f.write("\n")
         f.write("};\n")
 
 
-def output_functions_info(functions_info):
+def output_functions_info(functions_info,tra_A_B_addr,tra_B_A_addr):
     with open(output_functions_info_path, "w") as f:
         f.write('#include "func.h"\n')
         f.write("\n")
@@ -73,6 +78,10 @@ def output_functions_info(functions_info):
                 + "\n"
             )
         f.write("};\n")
+        f.write("uint32_t trampoline_A_B_addr=")
+        f.write(str(hex(tra_A_B_addr))+ ";\n")
+        f.write("uint32_t trampoline_B_A_addr=")
+        f.write(str(hex(tra_B_A_addr))+ ";\n")
 
 
 def parse_symbol_table(elf_file):
@@ -165,7 +174,11 @@ def generate_functions_info(symbol_tables, sections_info):
             functions_info.append(
                 [symbol[0] + sections_info[symbol[3]][0], symbol[1], symbol[4]]
             )
-    return functions_info
+            if symbol[4]=="trampoline_A_B":
+                tra_A_B_addr=symbol[0] + sections_info[symbol[3]][0]
+            if symbol[4]=="trampoline_B_A":
+                tra_B_A_addr=symbol[0] + sections_info[symbol[3]][0]
+    return functions_info,tra_A_B_addr,tra_B_A_addr
 
 
 def generate(elf_filename):
@@ -174,8 +187,8 @@ def generate(elf_filename):
 
         symbol_tables = parse_symbol_table(elf_file)
         sections_info = parse_section_table(elf_file)
-        functions_info = generate_functions_info(symbol_tables, sections_info)
-        output_functions_info(functions_info)
+        functions_info,tra_A_B_addr,tra_B_A_addr = generate_functions_info(symbol_tables, sections_info)
+        output_functions_info(functions_info,tra_A_B_addr,tra_B_A_addr)
         info = generate_relocation_info(elf_file, symbol_tables, sections_info)
         output_relocation_info(info)
 

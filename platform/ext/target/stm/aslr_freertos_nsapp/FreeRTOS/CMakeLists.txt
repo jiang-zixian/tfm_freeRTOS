@@ -296,6 +296,7 @@ target_sources(freertos_kernel PRIVATE
     stream_buffer.c
     tasks.c
     timers.c
+    trampoline.c
 )
 target_sources(freertos_kernel PRIVATE
     portable/Common/mpu_wrappers.c)

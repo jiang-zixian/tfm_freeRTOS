@@ -325,17 +325,20 @@ const VECTOR_TABLE_Type        __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE = {
 
 void r9Init(void) {
     __ASM volatile("mov.w	r9, #1");
+    __ASM volatile("movw r10,#0");
+    __ASM volatile("movt r10,#8193");
 }
 /*----------------------------------------------------------------------------
   Reset Handler called on controller reset
  *----------------------------------------------------------------------------*/
 void Reset_Handler(void) {
+    r9Init();
     __set_MSPLIM((uint32_t)(&__STACK_LIMIT));
 
     __set_PSP((uint32_t)(&__INITIAL_SP));
     __set_PSPLIM((uint32_t)(&__STACK_LIMIT));
 
     SystemInit(); /* CMSIS System Initialization */
-    // r9Init();
+    
     __PROGRAM_START(); /* Enter PreMain (C library entry point) */
 }

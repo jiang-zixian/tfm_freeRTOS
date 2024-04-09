@@ -10,6 +10,6 @@ void copy_text2ram(uint32_t dst, uint32_t src, uint32_t len);
 
 void relocate(uint32_t offset);
 
-void relocation(uint32_t offset_a, uint32_t offset_b);
+void relocation(uint32_t offset_a, uint32_t offset_b, uint32_t offset_c);
 
 uint32_t round_up(uint32_t addr);
