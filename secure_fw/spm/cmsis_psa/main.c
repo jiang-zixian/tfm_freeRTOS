@@ -121,14 +121,15 @@ int main(void) {
     int32_t  __tram_address__=0x08058fe2;
     uint32_t address_a = 0x20005000;
     uint32_t address_b = 0x20015000;
-    uint32_t address_c = 0x20025000;
+    uint32_t address_c = 0x20017000;
     uint32_t offset_a = address_a - __text_address__;
     uint32_t offset_b = address_b - __text_address__;
     uint32_t offset_c = address_c - __text_address__;
 
+    copy_text2ram(address_c, __text_address__, 0x5000);
     copy_text2ram(address_a, __text_address__, 0x5000);
     copy_text2ram(address_b, __text_address__, 0x5000);
-    //copy_text2ram(address_c, __text_address__, 0x5000);
+    
     divide();
     relocation(offset_a, offset_b,offset_c);
     //DWT_enable(address_a + 0x200, address_a + 0x2e00, address_b + 0x200, address_b + 0x2e00);
