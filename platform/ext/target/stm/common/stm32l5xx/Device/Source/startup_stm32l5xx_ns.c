@@ -327,6 +327,8 @@ void r9Init(void) {
     __ASM volatile("mov.w	r9, #1");
     __ASM volatile("movw r10,#0");
     __ASM volatile("movt r10,#8193");
+    __ASM volatile("movw r11,#47415");
+    __ASM volatile("movt r11,#8193");
 }
 /*----------------------------------------------------------------------------
   Reset Handler called on controller reset

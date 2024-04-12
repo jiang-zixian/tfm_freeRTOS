@@ -7,8 +7,11 @@
 
 set(CMAKE_SYSTEM_NAME Generic)
 
-set(CMAKE_C_COMPILER "/home/jiangzixian/llvmShadowStack/llvm-project/build/bin/clang")
-set(CMAKE_CXX_COMPILER "/home/jiangzixian/llvmShadowStack/llvm-project/build/bin/clang++")
+# set(CMAKE_C_COMPILER "/home/jiangzixian/llvmShadowStack/llvm-project/build/bin/clang")
+# set(CMAKE_CXX_COMPILER "/home/jiangzixian/llvmShadowStack/llvm-project/build/bin/clang++")
+
+set(CMAKE_C_COMPILER "/home/jiangzixian/llvmShadowStack/llvm-project/build/bin_nop_blx/clang")
+set(CMAKE_CXX_COMPILER "/home/jiangzixian/llvmShadowStack/llvm-project/build/bin_nop_blx/clang++")
 
 # set(CMAKE_C_COMPILER "/home/jiangzixian/llvmShadowStack/llvm_shadow_stack3/build/bin/clang")
 # set(CMAKE_CXX_COMPILER "/home/jiangzixian/llvmShadowStack/llvm_shadow_stack3/build/bin/clang++")

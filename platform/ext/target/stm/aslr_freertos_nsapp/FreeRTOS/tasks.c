@@ -1711,6 +1711,12 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
         // 向地址为 C 的内存位置写入值 0x200023b0
         *ptr = 0x1;
 
+        uintptr_t F = B +36;//r11
+
+        ptr = (uintptr_t*)F;
+
+        *ptr = 0x2001b937;
+
         return pxNewTCB;
     }
 /*-----------------------------------------------------------*/
